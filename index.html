@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Chores">
+<meta name="theme-color" content="#fff4e6">
+<title>Ballman Family Chores</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#fff4e6;--card:#fff;--tx:#1f2937;--mut:#6b7280;--line:#f3e3cf;--ac:#f97316;--kc:#f97316;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:linear-gradient(180deg,#fff4e6,#fffaf4) fixed;color:var(--tx);font:17px/1.4 ui-rounded,"SF Pro Rounded",-apple-system,system-ui,sans-serif}
+body{padding:env(safe-area-inset-top) 0 calc(80px + env(safe-area-inset-bottom))}
+main{max-width:560px;margin:0 auto;padding:12px 14px}
+h1{font-size:26px;margin:6px 0}h2{font-size:20px;margin:18px 0 8px}h3{font-size:17px;margin:4px 0}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin:12px 0;box-shadow:0 2px 0 #f3e3cf}
+button{background:#fff;color:var(--tx);border:1.5px solid var(--line);border-radius:14px;font:inherit;padding:9px 14px;cursor:pointer}
+button:active{transform:scale(.96)}button:disabled{opacity:.45}
+.btn{background:var(--kc);color:#fff;border:0;font-weight:700}
+.big{width:100%;padding:15px;font-size:19px;font-weight:800;border:0;background:var(--kc);color:#fff;border-radius:18px}
+.sm{padding:6px 10px;font-size:14px;border-radius:10px}
+.danger{color:var(--bad)}
+input,select,textarea{background:#fffaf4;color:var(--tx);border:1.5px solid var(--line);border-radius:12px;padding:10px;font:inherit;width:100%}
+label.f{display:block;margin:10px 0 4px;font-weight:700;font-size:15px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+.grow{flex:1;min-width:0}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:560px;margin:0 auto;padding:10px 14px 0}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:color-mix(in srgb,var(--kc) 22%,#fff);border:3px solid var(--kc);flex:none}
+.av.big{width:84px;height:84px;font-size:46px;margin:0 auto}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--kc) 16%,#fff);color:color-mix(in srgb,var(--kc) 75%,#000);font-weight:700;font-size:14px}
+.demo{background:#fde68a;color:#78350f}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:#ffffffee;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));z-index:5}
+nav.tabs button{flex:1;border:0;background:none;padding:6px 2px;font-size:12px;color:var(--mut);position:relative;font-weight:700}
+nav.tabs button i{display:block;font-style:normal;font-size:23px}
+nav.tabs button.on{color:var(--kc)}
+.badge{position:absolute;top:2px;right:calc(50% - 22px);background:var(--bad);color:#fff;border-radius:999px;font-size:11px;padding:1px 6px}
+.ring{position:relative;flex:none}.ring svg{width:100%;height:100%;display:block}
+.rin{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;text-align:center;line-height:1.1}
+.hero{display:flex;align-items:center;gap:14px}
+.slot{margin-top:10px}.slot h3{color:var(--mut);font-size:14px;text-transform:uppercase;letter-spacing:.04em}
+.chore{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px;margin:7px 0;border-radius:16px;font-size:18px;font-weight:700;border:2px solid var(--line);background:#fff}
+.chore .em{font-size:26px}.chore .ck{margin-left:auto;width:32px;height:32px;border-radius:50%;border:3px solid var(--line);display:grid;place-items:center;font-size:18px;color:#fff;flex:none}
+.chore.done{background:color-mix(in srgb,var(--kc) 12%,#fff);border-color:var(--kc)}
+.chore.done .ck{background:var(--kc);border-color:var(--kc)}
+.chore.done .t{text-decoration:line-through;opacity:.6}
+.chore.ro{cursor:default}
+.banner{border-radius:16px;padding:11px 13px;margin:10px 0;font-weight:700;font-size:15px}
+.banner.warn{background:#fef3c7;color:#92400e}.banner.ok{background:#dcfce7;color:#166534}.banner.calm{background:#e0f2fe;color:#075985}.banner.lock{background:#f3e8ff;color:#6b21a8}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:13px;padding:5px 9px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:700}
+.chip.done{background:var(--kc);border-color:var(--kc);color:#fff}
+.bar{height:16px;border-radius:999px;background:#f3e3cf;overflow:hidden}.bar>div{height:100%;background:linear-gradient(90deg,#f97316,#ec4899,#8b5cf6);border-radius:999px;transition:width .6s}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+.cell{border-radius:10px;padding:5px 2px;text-align:center;font-size:11px;background:#f9fafb;border:1px solid var(--line)}
+.cell b{display:block;font-size:16px}
+.cell.c{background:#dcfce7;border-color:#86efac}.cell.p{background:#fef3c7}.cell.x{background:#fee2e2}.cell.z{background:#e0f2fe}
+.profiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prof{padding:18px 8px;border-radius:22px;background:#fff;border:2px solid var(--kc);text-align:center;font-weight:800;font-size:18px}
+.prof .av{margin:0 auto 8px;width:64px;height:64px;font-size:36px}
+.days{display:flex;gap:5px;flex-wrap:wrap}.days button{padding:7px 9px;font-size:14px}.days button.on{background:var(--kc);color:#fff;border-color:var(--kc)}
+.modal{position:fixed;inset:0;background:#0006;display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.modal.hidden{display:none}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.pinw{text-align:center}.dots{display:flex;gap:14px;justify-content:center;margin:14px 0}.dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--kc)}.dots span.on{background:var(--kc)}
+.pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;justify-content:center;margin:10px 0 14px}.pad button{height:64px;font-size:26px;font-weight:700;border-radius:50%}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+#cele{position:fixed;inset:0;display:none;place-items:center;z-index:29;background:#fff8}
+#cele.on{display:grid}#cele>div{background:#fff;border-radius:26px;padding:26px;text-align:center;box-shadow:0 10px 40px #0003;font-size:22px;font-weight:800;max-width:320px;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 16px;border-radius:14px;font-size:15px;opacity:0;transition:.3s;z-index:40;pointer-events:none;max-width:90%}
+#toast.on{opacity:1}
+.thumb{width:64px;height:64px;object-fit:cover;border-radius:12px;flex:none}
+.qr svg{width:200px;height:200px;display:block;margin:10px auto}
+code{background:#f3f4f6;padding:2px 5px;border-radius:6px;font-size:12px;word-break:break-all}
+</style>
+</head><body>
+<div id="app"></div>
+<nav class="tabs" id="tabs" hidden></nav>
+<div id="modal" class="modal hidden"><div class="sheet" id="modBody"></div></div>
+<div id="cele"></div>
+<canvas id="fx"></canvas>
+<div id="toast"></div>
+<script type="module">
+/* =====================================================================
+   SYNC — Supabase project "ballman-family-chores" (free plan).
+   The publishable key is meant to be public: the database only allows the two
+   fc_merge / fc_pull functions, and both need the secret family ID from the join link.
+   Leave either value empty (or open with ?demo=1) for local DEMO mode (this browser only).
+   ===================================================================== */
+const SUPABASE_URL = 'https://ufmwhiwwkxncziqsblnr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_yZj9DvSAxP-oO8muSyEp-A_uWBEwN3I';
+const SB_VER = '2.119.0';
+/* ===================================================================== */
+const APP_VERSION = 'v3';
+const TZ = 'America/Vancouver';
+
+/* ---------- time (mockable for tests: window.__mockNow = ms or ?now=ISO) ---------- */
+const qs = new URLSearchParams(location.search);
+if (qs.get('now')) window.__mockNow = Date.parse(qs.get('now'));
+if (qs.get('demo') === '1') sessionStorage.setItem('fc.demo', '1');
+const DEMO = !SUPABASE_URL || !SUPABASE_KEY || sessionStorage.getItem('fc.demo') === '1';
+const now = () => (typeof window.__mockNow === 'number' ? window.__mockNow : Date.now());
+const partsFmt = new Intl.DateTimeFormat('en-CA', {timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23'});
+function tzParts(t = now()) { const o = {}; for (const p of partsFmt.formatToParts(new Date(t))) o[p.type] = p.value; return o; }
+function dayKey(t = now()) { const p = tzParts(t); return `${p.year}-${p.month}-${p.day}`; }
+function vanHour(t = now()) { return +tzParts(t).hour; }
+function dayNum(k) { const [y, m, d] = k.split('-').map(Number); return Math.round(Date.UTC(y, m - 1, d) / 864e5); }
+function fromNum(n) { return new Date(n * 864e5).toISOString().slice(0, 10); }
+function addDays(k, n) { return fromNum(dayNum(k) + n); }
+function dow(k) { return new Date(dayNum(k) * 864e5).getUTCDay(); }
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+function niceDay(k) { const d = new Date(dayNum(k) * 864e5); return d.toLocaleDateString('en-CA', {weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC'}); }
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const rid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+function randId(n = 28) { const a = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(n)); return [...r].map(x => a[x % a.length]).join(''); }
+function hash(str) { let h1 = 0xdeadbeef, h2 = 0x41c6ce57; for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); } h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909); return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36); }
+const pinHash = (fid, pin) => hash(fid + ':' + pin);
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2400); }
+function onErr(e) { console.warn('sync error', e); toast('⚠️ Sync problem: ' + (e && e.code || e && e.message || e)); }
+
+/* ---------- storage layer: Supabase (live, with offline cache) or localStorage (demo) ---------- */
+const DEL = {__del: 1};
+function deepMerge(t, s) {
+  for (const k in s) { const v = s[k];
+    if (v && v.__del) delete t[k];
+    else if (v && typeof v === 'object' && !Array.isArray(v)) { if (!t[k] || typeof t[k] !== 'object' || Array.isArray(t[k])) t[k] = {}; deepMerge(t[k], v); }
+    else t[k] = v; }
+  return t;
+}
+class LocalStore {
+  constructor() { this.k = 'fc.demo.db'; this.l = []; this.load(); addEventListener('storage', e => { if (e.key === this.k) { this.load(); this.l.forEach(l => this.fire(l)); } }); }
+  load() { try { this.db = JSON.parse(localStorage.getItem(this.k)) || {}; } catch { this.db = {}; } }
+  async init() {}
+  fire(l) { queueMicrotask(() => {
+    if (l.t === 'd') return l.cb(this.db[l.p] ? clone(this.db[l.p]) : null);
+    const pre = l.p + '/', out = [];
+    for (const k in this.db) if (k.startsWith(pre) && !k.slice(pre.length).includes('/')) { const d = this.db[k]; if (l.gte && !(d[l.gte[0]] >= l.gte[1])) continue; out.push({id: k.slice(pre.length), ...clone(d)}); }
+    l.cb(out); }); }
+  watch(l) { this.l.push(l); this.fire(l); return () => { this.l = this.l.filter(x => x !== l); }; }
+  watchDoc(p, cb) { return this.watch({t: 'd', p, cb}); }
+  watchCol(p, cb, gte) { return this.watch({t: 'c', p, cb, gte}); }
+  async merge(p, data) {
+    this.db[p] = deepMerge(this.db[p] || {}, clone(data));
+    localStorage.setItem(this.k, JSON.stringify(this.db));
+    this.l.filter(l => l.t === 'd' ? l.p === p : (p.startsWith(l.p + '/') && !p.slice(l.p.length + 1).includes('/'))).forEach(l => this.fire(l));
+  }
+}
+const PERM = new Set(['22023', 'P0002', '54000']);   // bad input / family not found / full: retrying won't help
+async function sha256hex(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+class SupaStore {
+  constructor() { this.l = []; this.fid = null; this.db = {}; this.seq = 0; this.ready = false; this.pulled = false; this.busy = false; this.again = false; this.full = true; this.online = null;
+    try { this.q = JSON.parse(localStorage.getItem('fc.queue')) || []; } catch { this.q = []; } }
+  async init() {
+    await this.connect().catch(e => console.warn('sync library not loaded yet (offline?)', e));   // offline: run from cache
+    const kick = full => () => { if (!document.hidden) { if (full) this.full = true; this.sync(); } };
+    addEventListener('online', kick(true)); addEventListener('focus', kick(true)); document.addEventListener('visibilitychange', kick(true));
+    setInterval(kick(false), 8000);
+  }
+  async connect() {
+    if (this.sb) return;
+    const m = await import(`https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${SB_VER}/+esm`);
+    this.sb = m.createClient(SUPABASE_URL, SUPABASE_KEY, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}});
+    if (this.fid) this.listen();
+  }
+  rel(p) { const m = p.match(/^families\/([A-Za-z0-9]+)(?:\/(.+))?$/); return {fid: m[1], path: m[2] || ''}; }
+  setFid(fid) {
+    if (fid === this.fid) return;
+    this.fid = fid; this.db = {}; this.seq = 0; this.pulled = false; this.full = true; this.ready = false;
+    try { const c = JSON.parse(localStorage.getItem('fc.cache.' + fid)); if (c && c.db) { this.db = c.db; this.seq = c.seq || 0; this.ready = true; } } catch {}
+    this.listen(); this.sync();
+  }
+  save() { if (!this.fid) return; try { localStorage.setItem('fc.cache.' + this.fid, JSON.stringify({db: this.db, seq: this.seq})); } catch (e) { console.warn('cache full', e); } }
+  saveQ() { try { localStorage.setItem('fc.queue', JSON.stringify(this.q)); } catch (e) { console.warn('queue save failed', e); } }
+  async listen() {   // live nudges between phones; polling below is the safety net
+    if (!this.sb || !this.fid) return;
+    const fid = this.fid, topic = 'fc-' + (await sha256hex('fc:' + fid)).slice(0, 32);
+    if (fid !== this.fid || (this.ch && this.ch.topic.endsWith(topic))) return;
+    if (this.ch) this.sb.removeChannel(this.ch);
+    this.ch = this.sb.channel(topic, {config: {broadcast: {self: false}}}).on('broadcast', {event: 'chg'}, () => this.sync()).subscribe();
+  }
+  ping() { try { this.ch && this.ch.send({type: 'broadcast', event: 'chg', payload: {}}); } catch {} }
+  fire(l) { if (!this.ready) return; queueMicrotask(() => {
+    if (l.t === 'd') return l.cb(this.db[l.p] ? clone(this.db[l.p]) : null);
+    const pre = l.p + '/', out = [];
+    for (const k in this.db) if (k.startsWith(pre) && !k.slice(pre.length).includes('/')) { const d = this.db[k]; if (l.gte && !(d[l.gte[0]] >= l.gte[1])) continue; out.push({id: k.slice(pre.length), ...clone(d)}); }
+    l.cb(out); }); }
+  fireFor(p) { this.l.filter(l => l.t === 'd' ? l.p === p : (p.startsWith(l.p + '/') && !p.slice(l.p.length + 1).includes('/'))).forEach(l => this.fire(l)); }
+  fireAll() { this.l.forEach(l => this.fire(l)); }
+  watch(l) { this.setFid(this.rel(l.p).fid); this.l.push(l); this.fire(l); return () => { this.l = this.l.filter(x => x !== l); }; }
+  watchDoc(p, cb) { return this.watch({t: 'd', p, cb}); }
+  watchCol(p, cb, gte) { return this.watch({t: 'c', p, cb, gte}); }
+  withQueued(p, base) { let d = clone(base || {}); for (const it of this.q) if (it.p === p) d = deepMerge(d, clone(it.patch)); return d; }
+  merge(p, data) {   // apply instantly on this phone, then send just the change (server merges it atomically)
+    const r = this.rel(p); if (r.fid !== this.fid) this.setFid(r.fid);
+    this.db[p] = deepMerge(this.db[p] || {}, clone(data));
+    this.q.push({fid: r.fid, path: r.path, p, patch: clone(data)}); this.saveQ(); this.save();
+    if (!this.ready) { this.ready = true; this.fireAll(); } else this.fireFor(p);
+    this.sync();
+  }
+  async sync() {
+    if (this.busy) { this.again = true; return; }
+    this.busy = true;
+    try { await this.connect(); do { this.again = false; await this.flush(); await this.pull(); } while (this.again); this.status(true); }
+    catch (e) { console.warn('sync failed, will retry', e); this.status(false); }
+    finally { this.busy = false; if (!this.ready && this.fid) { this.ready = true; this.fireAll(); } }
+  }
+  status(ok) { if (this.online !== ok) { this.online = ok; const el = document.getElementById('syncPill'); if (el) el.outerHTML = syncPill(); } }
+  async flush() {
+    let sent = false;
+    while (this.q.length) {
+      const it = this.q[0];
+      const {data, error} = await this.sb.rpc('fc_merge', {fid: it.fid, path: it.path, patch: it.patch});
+      if (error && !PERM.has(error.code)) throw new Error(error.message || 'network');
+      this.q.shift(); this.saveQ();
+      if (error) { onErr(error); continue; }
+      sent = true;
+      if (it.fid === this.fid && data && data[0]) { const nv = this.withQueued(it.p, data[0].data); if (JSON.stringify(nv) !== JSON.stringify(this.db[it.p])) { this.db[it.p] = nv; this.save(); this.fireFor(it.p); } }
+    }
+    if (sent) this.ping();
+  }
+  async pull() {
+    const fid = this.fid; if (!fid) return;
+    const since = this.full ? 0 : Math.max(0, this.seq - 10);   // small overlap catches writes that committed out of order
+    const {data, error} = await this.sb.rpc('fc_pull', {fid, since});
+    if (error) throw new Error(error.message || 'network');
+    if (fid !== this.fid) return;
+    this.full = false;
+    const ch = [];
+    for (const row of data || []) {
+      const p = row.path ? `families/${fid}/${row.path}` : `families/${fid}`, nv = this.withQueued(p, row.data);
+      if (JSON.stringify(nv) !== JSON.stringify(this.db[p])) { this.db[p] = nv; ch.push(p); }
+      if (row.seq > this.seq) this.seq = row.seq;
+    }
+    const first = !this.pulled; this.pulled = true;
+    if (ch.length || first) this.save();
+    if (!this.ready) { this.ready = true; this.fireAll(); } else if (first && !ch.length) this.fireAll(); else ch.forEach(p => this.fireFor(p));
+  }
+  pending() { return this.q.length; }
+}
+const store = DEMO ? new LocalStore() : new SupaStore();
+function W(p, d) { try { const r = store.merge(p, d); if (r && r.catch) r.catch(onErr); } catch (e) { onErr(e); } }
+
+/* ---------- state ---------- */
+const S = {fid: localStorage.getItem('fc.fid'), fam: null, famLoaded: false, days: {}, claims: [], reds: [], sugg: [], me: null, view: null, today: dayKey(), unsub: [], ready: false};
+const famPath = () => `families/${S.fid}`;
+const sub = c => `families/${S.fid}/${c}`;
+window.FC = {S, tick, store, dayKey, render};
+
+/* ---------- defaults ---------- */
+const SLOTS = [{k: 'am', label: 'Morning', icon: '🌅', from: 6}, {k: 'pm', label: 'After school', icon: '🎒', from: 15}, {k: 'night', label: 'Night', icon: '🌙', from: 19}];
+const WEEKDAYS = [1, 2, 3, 4, 5], ALL = [0, 1, 2, 3, 4, 5, 6];
+function defaultFamily(fid, f) {
+  const both = ['blake', 'julia'];
+  return {
+    name: f.name || 'Ballman Family', dogName: f.dog || '', created: dayKey(), parentPin: pinHash(fid, f.ppin),
+    members: [
+      {id: 'derek', name: 'Derek', nick: 'D-Rock', role: 'parent', emoji: '🎸', color: '#0ea5e9'},
+      {id: 'lesley', name: 'Lesley', nick: 'Mom', role: 'parent', emoji: '🌻', color: '#ec4899'},
+      {id: 'blake', name: 'Blake', nick: 'B-Rock', role: 'kid', emoji: '🦖', color: '#16a34a', pin: pinHash(fid, f.bpin)},
+      {id: 'julia', name: 'Julia', nick: 'J-Rock', role: 'kid', emoji: '🦄', color: '#9333ea', pin: pinHash(fid, f.jpin)}],
+    chores: [
+      {id: 'lunch', title: 'Make lunch', emoji: '🥪', slot: 'am', kids: both, days: WEEKDAYS, rotate: 'none'},
+      {id: 'teeth_am', title: 'Brush teeth', emoji: '🪥', slot: 'am', kids: both, days: ALL, rotate: 'none'},
+      {id: 'own_laundry', title: 'Put away own laundry', emoji: '👔', slot: 'am', kids: both, days: [6], rotate: 'none'},
+      {id: 'poop', title: 'Pick up dog poop', emoji: '💩', slot: 'am', kids: both, days: [0], rotate: 'alternate'},
+      {id: 'kit', title: 'Wash lunch kit', emoji: '🧽', slot: 'pm', kids: both, days: WEEKDAYS, rotate: 'none'},
+      {id: 'unpack', title: 'Unpack backpack', emoji: '📥', slot: 'pm', kids: both, days: WEEKDAYS, rotate: 'none'},
+      {id: 'homework', title: 'Homework or reading 20 min', emoji: '📖', slot: 'pm', kids: both, days: WEEKDAYS, rotate: 'none'},
+      {id: 'dog', title: 'Feed {dog}', emoji: '🐶', slot: 'pm', kids: both, days: ALL, rotate: 'alternate'},
+      {id: 'lacrosse', title: 'Lacrosse gear aired out', emoji: '🥍', slot: 'pm', kids: ['blake'], days: WEEKDAYS, rotate: 'none'},
+      {id: 'practice', title: 'Practice instrument or sport 15 min', emoji: '🏅', slot: 'pm', kids: both, days: [2, 4, 6], rotate: 'none'},
+      {id: 'teeth_pm', title: 'Brush teeth', emoji: '🪥', slot: 'night', kids: both, days: ALL, rotate: 'none'},
+      {id: 'pack', title: 'Pack backpack for tomorrow', emoji: '🎒', slot: 'night', kids: both, days: [0, 1, 2, 3, 4], rotate: 'none'},
+      {id: 'hamper', title: 'Dirty clothes in the hamper', emoji: '🧺', slot: 'night', kids: both, days: ALL, rotate: 'none'},
+      {id: 'dishes', title: 'Clear own dishes after meals', emoji: '🍴', slot: 'night', kids: both, days: ALL, rotate: 'none'},
+      {id: 'tidy', title: 'Tidy bedroom floor', emoji: '🧸', slot: 'night', kids: both, days: ALL, rotate: 'none'},
+      {id: 'phone', title: 'Phone charging outside bedroom', emoji: '🔌', slot: 'night', kids: both, days: ALL, rotate: 'none'},
+      {id: 'shower', title: 'Shower', emoji: '🚿', slot: 'night', kids: both, days: [0, 1, 3, 5], rotate: 'none'}],
+    extras: [
+      {id: 'dish', title: 'Unload the dishwasher', emoji: '🍽️', pts: 5},
+      {id: 'load', title: 'Load the dishwasher after dinner', emoji: '🥣', pts: 5},
+      {id: 'counters', title: 'Wipe counters and table', emoji: '🧼', pts: 5},
+      {id: 'dinner', title: 'Help cook dinner', emoji: '🍳', pts: 10},
+      {id: 'groceries', title: 'Put away groceries', emoji: '🛒', pts: 8},
+      {id: 'vacuum', title: 'Vacuum a room or stairs', emoji: '🧹', pts: 10},
+      {id: 'laundry', title: 'Fold family laundry', emoji: '👕', pts: 8},
+      {id: 'cans', title: 'Empty small garbage cans', emoji: '🚮', pts: 5},
+      {id: 'trash', title: 'Take out garbage & recycling', emoji: '🗑️', pts: 5},
+      {id: 'walk', title: 'Walk {dog}', emoji: '🦮', pts: 8},
+      {id: 'yard', title: 'Rake leaves or weed', emoji: '🍂', pts: 10},
+      {id: 'car', title: 'Clean out the car', emoji: '🚗', pts: 10},
+      {id: 'surprise', title: 'Surprise chore', emoji: '✨', pts: 8, needsNote: true, notePrompt: 'What did you do? Describe it for your parents.'}],
+    rewards: [
+      {id: 'screen', title: '30 min extra screen time', emoji: '📱', cost: 20}, {id: 'treat', title: 'A treat', emoji: '🍦', cost: 25},
+      {id: 'late', title: 'Stay up 30 min later', emoji: '🌙', cost: 30}, {id: 'movie', title: 'Pick the family movie', emoji: '🎬', cost: 35},
+      {id: 'dinnerpick', title: 'Choose dinner', emoji: '🍕', cost: 40}, {id: 'five', title: '$5', emoji: '💵', cost: 50}],
+    goal: {title: 'Family outing 🎳', target: 300, since: dayKey()},
+    pauses: {}, bests: {}
+  };
+}
+
+/* ---------- derived ---------- */
+const members = () => S.fam?.members || [];
+const kids = () => members().filter(m => m.role === 'kid');
+const M = id => members().find(m => m.id === id);
+const isParent = () => M(S.me)?.role === 'parent';
+const dogName = () => (S.fam?.dogName || '').trim() || 'the dog';
+const T = x => String(x.title || '').replace('{dog}', dogName());
+const kname = id => { const m = M(id); return m ? (m.nick || m.name) : id; };
+function choresFor(kid, k) {
+  return (S.fam?.chores || []).filter(c => (c.days || ALL).includes(dow(k)) && (c.kids || []).includes(kid) &&
+    (c.rotate === 'alternate' ? c.kids[((dayNum(k) % c.kids.length) + c.kids.length) % c.kids.length] === kid : true));
+}
+const doneMap = (kid, k) => S.days[k]?.done?.[kid] || {};
+function isComplete(kid, k) {
+  if (k === S.today) { const l = choresFor(kid, k), d = doneMap(kid, k); return l.length > 0 && l.every(c => d[c.id]); }
+  return !!S.days[k]?.complete?.[kid];
+}
+const isPaused = (kid, k) => (S.fam?.pauses?.[kid] || []).some(p => p.from <= k && (!p.to || k <= p.to));
+const pausedNow = kid => isPaused(kid, S.today);
+function streak(kid) {
+  let s = isComplete(kid, S.today) ? 1 : 0; const start = S.fam?.created || S.today;
+  for (let i = 1; i < 400; i++) { const k = addDays(S.today, -i); if (k < start) break;
+    if (S.days[k]?.complete?.[kid]) { s++; continue; }
+    if (isPaused(kid, k)) continue;
+    if (choresFor(kid, k).length === 0) continue;
+    break; }
+  return s;
+}
+const best = kid => Math.max(S.fam?.bests?.[kid] || 0, streak(kid));
+const earned = kid => S.claims.filter(c => c.kid === kid && c.status === 'approved').reduce((a, c) => a + (+c.pts || 0), 0);
+const spent = kid => S.reds.filter(r => r.kid === kid && (r.status === 'approved' || r.status === 'pending')).reduce((a, r) => a + (+r.cost || 0), 0);
+const balance = kid => earned(kid) - spent(kid);
+function goalProgress() {
+  const g = S.fam?.goal; if (!g) return 0; const since = g.since || '0';
+  let p = S.claims.filter(c => c.status === 'approved' && (c.day || '') >= since).reduce((a, c) => a + (+c.pts || 0), 0);
+  for (const k in S.days) if (k >= since) for (const kid of kids()) if (isComplete(kid.id, k)) p += 2;
+  return p;
+}
+const pendingCount = () => S.claims.filter(c => c.status === 'pending').length + S.reds.filter(r => r.status === 'pending').length + S.sugg.filter(s => s.status === 'pending').length;
+
+/* ---------- sync / subscriptions ---------- */
+function subscribe() {
+  S.unsub.forEach(u => u && u()); S.unsub = []; S.fam = null; S.famLoaded = false; S.days = {}; S.claims = []; S.reds = []; S.sugg = [];
+  if (!S.fid) return;
+  S.me = localStorage.getItem('fc.me.' + S.fid);
+  S.unsub.push(store.watchDoc(famPath(), d => { S.fam = d; S.famLoaded = true; render(); }));
+  S.unsub.push(store.watchCol(sub('days'), arr => { S.days = {}; arr.forEach(d => S.days[d.id] = d); render(); }, ['d', addDays(S.today, -120)]));
+  S.unsub.push(store.watchCol(sub('claims'), a => { S.claims = a.sort((x, y) => (y.ts || 0) - (x.ts || 0)); render(); }));
+  S.unsub.push(store.watchCol(sub('redemptions'), a => { S.reds = a.sort((x, y) => (y.ts || 0) - (x.ts || 0)); render(); }));
+  S.unsub.push(store.watchCol(sub('suggestions'), a => { S.sugg = a.sort((x, y) => (y.ts || 0) - (x.ts || 0)); render(); }));
+}
+function tick() { const k = dayKey(); if (k !== S.today) { S.today = k; render(); } else if (S.view === 'today') render(); }
+
+/* ---------- sound + confetti (AudioContext created on first tap for iOS) ---------- */
+let AC;
+function ac() { if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); } if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, t0, d, type = 'triangle', v = .16) { const a = ac(); if (!a) return; const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0; o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g).connect(a.destination); o.start(t); o.stop(t + d + .05); }
+function sfx(k) { if (localStorage.getItem('fc.mute') === '1') return; if (k === 'pop') { tone(660, 0, .12); tone(990, .06, .14); } else if (k === 'yay') { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .11, .35)); tone(1568, .62, .7, 'sine', .1); } }
+function confetti() {
+  const c = $('#fx'), x = c.getContext('2d'), dpr = devicePixelRatio || 1; c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+  const cols = ['#f97316', '#ec4899', '#8b5cf6', '#22c55e', '#eab308', '#0ea5e9'];
+  const P = Array.from({length: 170}, () => ({x: Math.random() * c.width, y: -Math.random() * c.height * .5, vx: (Math.random() - .5) * 4 * dpr, vy: (2 + Math.random() * 4) * dpr, r: Math.random() * 6, w: (6 + Math.random() * 6) * dpr, h: (8 + Math.random() * 8) * dpr, c: cols[Math.random() * cols.length | 0], s: Math.random() * .3}));
+  const t0 = performance.now();
+  (function f(t) { x.clearRect(0, 0, c.width, c.height); const el = t - t0;
+    for (const p of P) { p.x += p.vx; p.y += p.vy; p.vy += .05 * dpr; p.r += p.s; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.globalAlpha = Math.max(0, 1 - el / 3500); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); }
+    if (el < 3500) requestAnimationFrame(f); else x.clearRect(0, 0, c.width, c.height); })(t0);
+}
+function celebrate(kid) {
+  window.__celebrations = (window.__celebrations || 0) + 1;
+  sfx('yay'); confetti(); const s = streak(kid);
+  const ce = $('#cele'); ce.innerHTML = `<div>🎉<br>Done for the day, ${esc(kname(kid))}!<div class="mut" style="font-size:16px;margin-top:8px">🔥 ${s}-day streak · Extras unlocked ⭐</div></div>`;
+  ce.classList.add('on'); clearTimeout(celebrate.t); celebrate.t = setTimeout(() => ce.classList.remove('on'), 3800);
+  if (s > (S.fam?.bests?.[kid] || 0)) W(famPath(), {bests: {[kid]: s}});
+}
+$('#cele').onclick = () => $('#cele').classList.remove('on');
+
+/* ---------- UI bits ---------- */
+function ring(p, color, size = 84, inner = '') {
+  const r = size / 2 - 7, C = 2 * Math.PI * r, h = size / 2;
+  return `<div class="ring" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="#0000000f" stroke-width="9"/><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - Math.min(1, p))}" transform="rotate(-90 ${h} ${h})" style="transition:stroke-dashoffset .5s"/></svg><div class="rin">${inner}</div></div>`;
+}
+const kc = id => `--kc:${esc(M(id)?.color || '#f97316')}`;
+function openModal(h) { $('#modBody').innerHTML = h; $('#modal').classList.remove('hidden'); }
+function closeModal() { $('#modal').classList.add('hidden'); $('#modBody').innerHTML = ''; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+function goalCard() {
+  const g = S.fam.goal; if (!g) return ''; const p = goalProgress(), pct = Math.min(1, p / (g.target || 1));
+  return `<div class="card"><div class="row" style="border:0;padding:0"><div class="grow"><h3>🤝 Team goal: ${esc(g.title)}</h3><div class="mut">Everyone's extra points + 2 for each done-for-the-day</div></div><b>${p}/${g.target}</b></div><div class="bar" style="margin-top:10px"><div style="width:${pct * 100}%"></div></div>${pct >= 1 ? `<div class="banner ok">🎉 Goal reached! Time for: ${esc(g.title)}</div>` : ''}</div>`;
+}
+function reminder(kid) {
+  const list = choresFor(kid, S.today), d = doneMap(kid, S.today), h = vanHour();
+  if (!list.length) return `<div class="banner calm">😎 No must-dos today. Enjoy!</div>`;
+  if (list.every(c => d[c.id])) return `<div class="banner ok">🎉 All done for today! Extras are unlocked.</div>`;
+  const due = list.filter(c => !d[c.id] && SLOTS.find(s => s.k === c.slot).from <= h);
+  if (!due.length) { const nx = list.find(c => !d[c.id]); return `<div class="banner calm">😎 Nothing due right now. Next up: ${nx.emoji} ${esc(T(nx))}</div>`; }
+  return `<div class="banner warn">⏰ Still to do: ${due.map(c => c.emoji + ' ' + esc(T(c))).join(', ')}</div>`;
+}
+function choreList(kid, canTick) {
+  const list = choresFor(kid, S.today), d = doneMap(kid, S.today);
+  return SLOTS.map(s => { const cs = list.filter(c => c.slot === s.k); if (!cs.length) return '';
+    return `<div class="slot"><h3>${s.icon} ${s.label}</h3>${cs.map(c => `<button class="chore ${d[c.id] ? 'done' : ''} ${canTick ? '' : 'ro'}" ${canTick ? `data-act="toggle" data-kid="${kid}" data-c="${c.id}"` : ''}><span class="em">${c.emoji}</span><span class="t">${esc(T(c))}</span><span class="ck">${d[c.id] ? '✓' : ''}</span></button>`).join('')}</div>`; }).join('');
+}
+
+/* ---------- views ---------- */
+function vSetup() {
+  return `<main><div style="text-align:center;margin-top:20px"><div style="font-size:64px">🏡</div><h1>Family Chores</h1><p class="mut">Daily must-dos, bonus extras, rewards and a family team goal.</p></div>
+  <div class="card"><h2 style="margin-top:0">✨ Set up our family</h2>
+   <label class="f">Family name</label><input id="sName" value="Ballman Family">
+   <label class="f">Dog's name</label><input id="sDog" value="Ash" placeholder="e.g. Ash">
+   <label class="f">Parent PIN (Derek &amp; Lesley, 4 digits)</label><input id="sP" inputmode="numeric" maxlength="4" placeholder="••••">
+   <label class="f">Blake's PIN (B-Rock)</label><input id="sB" inputmode="numeric" maxlength="4" placeholder="••••">
+   <label class="f">Julia's PIN (J-Rock)</label><input id="sJ" inputmode="numeric" maxlength="4" placeholder="••••">
+   <p class="mut">You can change names, PINs, chores, extras and rewards later in parent mode.</p>
+   <button class="big" data-act="create">Create family</button></div>
+  <div class="card"><h3>📲 Joining from another phone?</h3><p class="mut">Open the join link a parent shares (Manage → Invite), or paste it here.</p><input id="sJoin" placeholder="https://…?family=…"><div style="height:8px"></div><button class="btn" data-act="join">Join family</button></div>
+  ${DEMO ? `<p class="mut" style="text-align:center"><span class="pill demo">DEMO MODE</span> Data stays on this device only.</p>` : ''}</main>`;
+}
+function vPicker() {
+  return `<main><div style="text-align:center;margin:18px 0"><div style="font-size:52px">🏡</div><h1>${esc(S.fam.name)}</h1><p class="mut">Who's using this phone?</p></div>
+  <div class="profiles">${members().map(m => `<button class="prof" style="${kc(m.id)}" data-act="pick" data-id="${m.id}"><div class="av">${m.emoji}</div>${esc(m.nick || m.name)}<div class="mut">${m.role === 'parent' ? 'Parent' : esc(m.name)}</div></button>`).join('')}</div></main>`;
+}
+function vToday() {
+  const k = S.me, list = choresFor(k, S.today), d = doneMap(k, S.today), n = list.filter(c => d[c.id]).length, m = M(k);
+  return `<div class="card hero">${ring(list.length ? n / list.length : 1, m.color, 92, `<div style="font-size:22px">${n}/${list.length}</div><div class="mut" style="font-size:11px">done</div>`)}
+   <div class="grow"><h1 style="font-size:24px">Hi ${esc(m.nick || m.name)}! ${m.emoji}</h1><div><span class="pill">🔥 ${streak(k)}-day streak</span> <span class="pill">⭐ ${balance(k)} pts</span></div>${pausedNow(k) ? '<div class="mut" style="margin-top:6px">🏖️ Streak pause is on, your streak is safe.</div>' : ''}</div></div>
+   ${reminder(k)}<div class="card">${choreList(k, true) || '<p class="mut">No must-dos today. 🎈</p>'}</div>`;
+}
+function vBoard() {
+  return `<h2>🏠 Today's family board</h2><div class="mut">${niceDay(S.today)}</div>
+  ${kids().map(kd => { const list = choresFor(kd.id, S.today), d = doneMap(kd.id, S.today), n = list.filter(c => d[c.id]).length, can = isParent() || kd.id === S.me;
+    return `<div class="card" style="${kc(kd.id)}"><div class="hero">${ring(list.length ? n / list.length : 1, kd.color, 76, `<span style="font-size:28px">${isComplete(kd.id, S.today) ? '🏆' : kd.emoji}</span>`)}<div class="grow"><h3>${esc(kd.nick || kd.name)}</h3><div class="mut">${n} of ${list.length} must-dos${pausedNow(kd.id) ? ' · 🏖️ paused' : ''}</div><div style="margin-top:4px"><span class="pill">🔥 ${streak(kd.id)}</span> <span class="pill">🏅 best ${best(kd.id)}</span> <span class="pill">⭐ ${balance(kd.id)}</span></div></div></div>
+    <div class="chips">${list.map(c => `<button class="chip ${d[c.id] ? 'done' : ''}" ${can ? `data-act="toggle" data-kid="${kd.id}" data-c="${c.id}"` : 'disabled style="opacity:1"'}>${c.emoji} ${esc(T(c))}${d[c.id] ? ' ✓' : ''}</button>`).join('')}</div></div>`; }).join('')}
+  ${goalCard()}${isParent() && pendingCount() ? `<button class="big" data-act="tab" data-v="approve">📬 ${pendingCount()} waiting for approval</button>` : ''}`;
+}
+function vExtras() {
+  const k = S.me, list = choresFor(k, S.today), d = doneMap(k, S.today), left = list.filter(c => !d[c.id]).length, unlocked = left === 0;
+  return `<h2>⭐ Bonus extras</h2><div><span class="pill">⭐ ${balance(k)} points to spend</span></div>
+  ${unlocked ? '<div class="banner ok">🔓 Extras unlocked! Do one, then tap "I did it" for a parent to check.</div>' : `<div class="banner lock">🔒 Finish your must-dos first (${left} left), then extras unlock and start earning points!</div>`}
+  <div class="card">${(S.fam.extras || []).map(x => { const c = S.claims.find(c => c.kid === k && c.extra === x.id && c.day === S.today && c.status !== 'rejected');
+    return `<div class="row"><span style="font-size:28px">${x.emoji}</span><div class="grow"><b>${esc(T(x))}</b><div class="mut">+${x.pts} points</div></div>${c ? `<span class="pill">${c.status === 'pending' ? '⏳ Waiting' : '✅ +' + c.pts}</span>` : `<button class="btn sm" data-act="claim" data-x="${x.id}" ${unlocked ? '' : 'disabled'}>${unlocked ? 'I did it!' : '🔒'}</button>`}</div>`; }).join('') || '<p class="mut">No extras yet. Ask a parent to add some!</p>'}</div>`;
+}
+function vRewards() {
+  const k = S.me, b = balance(k), mine = S.reds.filter(r => r.kid === k).slice(0, 8);
+  return `<h2>🎁 Rewards</h2><div class="card hero"><div style="font-size:40px">⭐</div><div class="grow"><h1 style="margin:0">${b} points</h1><div class="mut">Earned from extras. Points never get taken away.</div></div></div>
+  <div class="card">${(S.fam.rewards || []).map(r => `<div class="row"><span style="font-size:28px">${r.emoji}</span><div class="grow"><b>${esc(r.title)}</b><div class="mut">${r.cost} points${b < r.cost ? ` · ${r.cost - b} more to go` : ''}</div></div><button class="btn sm" data-act="redeem" data-r="${r.id}" ${b >= r.cost ? '' : 'disabled'}>Get it</button></div>`).join('')}</div>
+  ${mine.length ? `<div class="card"><h3>My requests</h3>${mine.map(r => `<div class="row"><span>${r.emoji}</span><div class="grow">${esc(r.title)}</div><span class="pill">${r.status === 'pending' ? '⏳ Waiting' : r.status === 'approved' ? '✅ Yes!' : '↩️ Points back'}</span></div>`).join('')}</div>` : ''}
+  <div class="card"><h3>💡 Suggest a reward</h3><input id="sugT" maxlength="80" placeholder="e.g. Trip to the trampoline park"><div style="height:8px"></div><button class="btn" data-act="suggest">Send to parents</button>
+  ${S.sugg.filter(s => s.kid === k).slice(0, 5).map(s => `<div class="row"><div class="grow">${esc(s.title)}</div><span class="pill">${s.status === 'pending' ? '⏳' : s.status === 'approved' ? '✅ Added' : '🙅 Not now'}</span></div>`).join('')}</div>${goalCard()}`;
+}
+function syncPill() {
+  if (DEMO) return '<span class="pill demo" id="syncPill">Demo, this phone only</span>';
+  const n = store.pending(), on = store.online;
+  return `<span class="pill" id="syncPill">${on === false ? `📴 Offline${n ? `, ${n} waiting` : ''}, will catch up` : on ? '✅ Live, all phones' : 'Connecting…'}</span>`;
+}
+function settingsCard() {
+  return `<div class="card"><h3>⚙️ App</h3>
+  <div class="row"><div class="grow">Sounds</div><button class="sm" data-act="mute">${localStorage.getItem('fc.mute') === '1' ? '🔇 Off' : '🔊 On'}</button></div>
+  <div class="row"><div class="grow"><b>Reminders</b><div class="mut">The app shows "still to do" banners by time of day. iPhone notifications only work after Add to Home Screen (Share → Add to Home Screen) and aren't switched on in this version.</div></div></div>
+  <div class="row"><div class="grow">Sync</div>${syncPill()}</div>
+  <div class="row"><div class="grow">Version</div><b id="ver">Family Chores ${APP_VERSION}</b></div>
+  <div class="row"><button data-act="switch">👋 Switch person</button></div></div>`;
+}
+function vMe() {
+  const k = S.me, m = M(k);
+  return `<div class="card" style="text-align:center"><div class="av big">${m.emoji}</div><h1>${esc(m.nick || m.name)}</h1>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><span class="pill">🔥 Streak ${streak(k)}</span><span class="pill">🏅 Best ${best(k)}</span><span class="pill">⭐ ${balance(k)} pts</span><span class="pill">🏆 ${earned(k)} earned all-time</span></div>
+  ${pausedNow(k) ? '<p class="mut">🏖️ Vacation/sick pause is on. Your streak won\'t break.</p>' : ''}</div>${settingsCard()}`;
+}
+function vApprove() {
+  const cl = S.claims.filter(c => c.status === 'pending'), rd = S.reds.filter(r => r.status === 'pending'), sg = S.sugg.filter(s => s.status === 'pending');
+  return `<h2>📬 Approvals</h2>
+  <div class="card"><h3>⭐ Extras done</h3>${cl.map(c => `<div class="row" style="${kc(c.kid)}">${c.photo ? `<img class="thumb" src="${c.photo}" data-act="photo" data-id="${c.id}">` : `<span style="font-size:28px">${c.emoji}</span>`}<div class="grow"><b>${esc(kname(c.kid))}</b>: ${esc(c.title)}<div class="mut">+${c.pts} pts · ${c.day === S.today ? 'today' : esc(c.day)}</div>${c.note ? `<div class="mut">“${esc(c.note)}”</div>` : ''}</div><button class="btn sm" data-act="okClaim" data-id="${c.id}">✓</button><button class="sm" data-act="noClaim" data-id="${c.id}">✕</button></div>`).join('') || '<p class="mut">Nothing waiting.</p>'}</div>
+  <div class="card"><h3>🎁 Reward requests</h3>${rd.map(r => `<div class="row" style="${kc(r.kid)}"><span style="font-size:28px">${r.emoji}</span><div class="grow"><b>${esc(kname(r.kid))}</b>: ${esc(r.title)}<div class="mut">${r.cost} pts (held until you decide)</div></div><button class="btn sm" data-act="okRed" data-id="${r.id}">Give</button><button class="sm" data-act="noRed" data-id="${r.id}">Not now</button></div>`).join('') || '<p class="mut">Nothing waiting.</p>'}</div>
+  <div class="card"><h3>💡 Reward ideas from the kids</h3>${sg.map(s => `<div class="row"><div class="grow"><b>${esc(kname(s.kid))}</b>: ${esc(s.title)}</div><button class="btn sm" data-act="okSug" data-id="${s.id}">Add</button><button class="sm" data-act="noSug" data-id="${s.id}">✕</button></div>`).join('') || '<p class="mut">No ideas yet.</p>'}</div>`;
+}
+function vHistory() {
+  const ks = Array.from({length: 14}, (_, i) => addDays(S.today, i - 13));
+  return `<h2>📅 Last 14 days</h2><div class="mut">✅ all done · 🟨 partly · ❌ none · 🏖️ paused</div>
+  ${kids().map(kd => { let full = 0;
+    const cells = ks.map(k => { const l = choresFor(kd.id, k), dm = doneMap(kd.id, k), n = l.filter(c => dm[c.id]).length, pts = S.claims.filter(c => c.kid === kd.id && c.day === k && c.status === 'approved').reduce((a, c) => a + c.pts, 0);
+      let cls, sym; if (k < (S.fam.created || '')) { cls = ''; sym = '·'; } else if (isComplete(kd.id, k)) { cls = 'c'; sym = '✅'; full++; } else if (isPaused(kd.id, k)) { cls = 'z'; sym = '🏖️'; } else if (!l.length) { cls = ''; sym = '—'; } else if (n) { cls = 'p'; sym = `${n}/${l.length}`; } else { cls = k === S.today ? '' : 'x'; sym = k === S.today ? '…' : '❌'; }
+      return `<div class="cell ${cls}">${DOW[dow(k)]}<b>${sym}</b>${+k.slice(8)}${pts ? `<div style="color:#b45309">+${pts}</div>` : ''}</div>`; }).join('');
+    return `<div class="card" style="${kc(kd.id)}"><h3>${kd.emoji} ${esc(kd.nick || kd.name)} <span class="pill">${full}/14 full days</span> <span class="pill">🏅 best ${best(kd.id)}</span></h3><div class="grid7">${cells}</div></div>`; }).join('')}`;
+}
+function vManage() {
+  const f = S.fam, slotL = k => SLOTS.find(s => s.k === k)?.label;
+  return `<h2>⚙️ Manage</h2>
+  <div class="card"><h3>📲 Invite the other phones</h3><p class="mut">Send this link to Lesley, Blake and Julia. It's the family's secret key, so only share it with family.</p><code id="joinLink">${esc(joinLink())}</code><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" data-act="share">Share link</button><button class="sm" data-act="copy">Copy</button><button class="sm" data-act="qr">Show QR</button></div></div>
+  <div class="card"><h3>👧👦 Kids</h3>${kids().map(k => `<div class="row" style="${kc(k.id)}"><span class="av">${k.emoji}</span><div class="grow"><b>${esc(k.nick || k.name)}</b><div class="mut">${pausedNow(k.id) ? '🏖️ Paused (vacation/sick)' : 'Streak active'}</div></div><button class="sm" data-act="pause" data-id="${k.id}">${pausedNow(k.id) ? 'Resume' : '🏖️ Pause'}</button><button class="sm" data-act="editKid" data-id="${k.id}">Edit</button></div>`).join('')}</div>
+  <div class="card"><h3>✅ Must-dos</h3>${(f.chores || []).map(c => `<div class="row"><span style="font-size:24px">${c.emoji}</span><div class="grow"><b>${esc(T(c))}</b><div class="mut">${slotL(c.slot)} · ${(c.days || ALL).length === 7 ? 'every day' : (c.days || []).map(d => DOW[d]).join(' ')} · ${c.rotate === 'alternate' ? 'takes turns: ' + c.kids.map(kname).join(' / ') : c.kids.map(kname).join(' + ')}</div></div><button class="sm" data-act="editChore" data-id="${c.id}">Edit</button></div>`).join('')}<button class="btn sm" data-act="editChore" data-id="">+ Add must-do</button></div>
+  <div class="card"><h3>⭐ Extras</h3>${(f.extras || []).map(x => `<div class="row"><span style="font-size:24px">${x.emoji}</span><div class="grow"><b>${esc(T(x))}</b><div class="mut">+${x.pts} pts</div></div><button class="sm" data-act="editItem" data-kind="extras" data-id="${x.id}">Edit</button></div>`).join('')}<button class="btn sm" data-act="editItem" data-kind="extras" data-id="">+ Add extra</button></div>
+  <div class="card"><h3>🎁 Rewards</h3>${(f.rewards || []).map(x => `<div class="row"><span style="font-size:24px">${x.emoji}</span><div class="grow"><b>${esc(x.title)}</b><div class="mut">${x.cost} pts</div></div><button class="sm" data-act="editItem" data-kind="rewards" data-id="${x.id}">Edit</button></div>`).join('')}<button class="btn sm" data-act="editItem" data-kind="rewards" data-id="">+ Add reward</button></div>
+  <div class="card"><h3>🏡 Family</h3><label class="f">Family name</label><input id="mName" value="${esc(f.name)}"><label class="f">Dog's name</label><input id="mDog" value="${esc(f.dogName || '')}" placeholder="the dog">
+   <label class="f">Team goal</label><input id="mGoal" value="${esc(f.goal?.title || '')}"><label class="f">Goal target (team points)</label><input id="mTarget" inputmode="numeric" value="${f.goal?.target || 300}">
+   <label class="f">New parent PIN (leave blank to keep)</label><input id="mPin" inputmode="numeric" maxlength="4">
+   <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" data-act="saveFam">Save</button><button data-act="resetGoal">Start goal over</button></div></div>
+  ${settingsCard()}<div class="card"><button class="danger" data-act="leave">Remove this family from this phone</button></div>`;
+}
+const joinLink = () => location.origin + location.pathname + '?family=' + S.fid;
+
+/* ---------- render ---------- */
+function render() {
+  const app = $('#app'), tabs = $('#tabs');
+  if (!S.ready) { app.innerHTML = '<main><p class="mut" style="text-align:center;margin-top:40vh">Loading…</p></main>'; return; }
+  if (!S.fid) { tabs.hidden = true; document.body.style.cssText = ''; app.innerHTML = vSetup(); return; }
+  if (!S.fam) { tabs.hidden = true; app.innerHTML = `<main style="text-align:center;margin-top:30vh"><p>${S.famLoaded ? "Can't find this family yet. The first time on a new phone needs internet." : 'Loading your family…'}</p><button data-act="leave">Start over</button></main>`; return; }
+  if (!S.me || !M(S.me)) { tabs.hidden = true; document.body.style.cssText = ''; app.innerHTML = vPicker(); return; }
+  const m = M(S.me), parent = isParent();
+  document.body.style.cssText = `--kc:${m.color}`;
+  const T1 = parent ? [['board', '🏠', 'Board'], ['approve', '📬', 'Approve'], ['history', '📅', 'History'], ['manage', '⚙️', 'Manage']] : [['today', '✅', 'My day'], ['board', '🏠', 'Family'], ['extras', '⭐', 'Extras'], ['rewards', '🎁', 'Rewards'], ['me', '🙂', 'Me']];
+  if (!T1.some(t => t[0] === S.view)) S.view = T1[0][0];
+  tabs.hidden = false; const pc = pendingCount();
+  tabs.innerHTML = T1.map(([v, i, l]) => `<button class="${S.view === v ? 'on' : ''}" data-act="tab" data-v="${v}"><i>${i}</i>${l}${v === 'approve' && pc ? `<span class="badge">${pc}</span>` : ''}</button>`).join('');
+  const views = {today: vToday, board: vBoard, extras: vExtras, rewards: vRewards, me: vMe, approve: vApprove, history: vHistory, manage: vManage};
+  app.innerHTML = `<header class="top"><div class="who"><span class="av">${m.emoji}</span><div><b>${esc(m.nick || m.name)}</b>${parent ? ' <span class="pill">Parent</span>' : ''}<div class="mut">${niceDay(S.today)}</div></div></div>${DEMO ? '<span class="pill demo">DEMO</span>' : ''}<button class="sm" data-act="switch">Switch</button></header><main id="view-${S.view}">${views[S.view]()}</main>`;
+}
+
+/* ---------- photo compression (keeps proof under ~200KB) ---------- */
+async function compress(file) {
+  const url = URL.createObjectURL(file);
+  try { const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    let max = 800, q = .7;
+    for (let t = 0; t < 7; t++) { const sc = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.width * sc)); c.height = Math.max(1, Math.round(img.height * sc)); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); const d = c.toDataURL('image/jpeg', q); if (d.length <= 200000) return d; max *= .75; q = Math.max(.4, q - .1); }
+    return null; } catch { return null; } finally { URL.revokeObjectURL(url); }
+}
+
+/* ---------- actions ---------- */
+const val = id => ($('#' + id)?.value || '').trim();
+const okPin = p => /^\d{4}$/.test(p);
+let pinBuf = '', pinFor = null;
+const ACT = {
+  create() {
+    const f = {name: val('sName'), dog: val('sDog'), ppin: val('sP'), bpin: val('sB'), jpin: val('sJ')};
+    if (![f.ppin, f.bpin, f.jpin].every(okPin)) return toast('PINs need to be 4 digits each');
+    const fid = randId(28); W(`families/${fid}`, defaultFamily(fid, f));
+    S.fid = fid; localStorage.setItem('fc.fid', fid); subscribe(); render(); toast('Family created! 🎉');
+  },
+  join() { const m = val('sJoin').match(/family=([A-Za-z0-9]{20,64})/) || val('sJoin').match(/^([A-Za-z0-9]{20,64})$/); if (!m) return toast('That link doesn\'t look right'); S.fid = m[1]; localStorage.setItem('fc.fid', S.fid); subscribe(); render(); },
+  pick(el) { pinFor = el.dataset.id; pinBuf = ''; const m = M(pinFor);
+    openModal(`<div class="pinw" style="${kc(m.id)}"><div class="av big">${m.emoji}</div><h2>Hi ${esc(m.nick || m.name)}!</h2><div class="mut">${m.role === 'parent' ? 'Enter the parent PIN' : 'Enter your PIN'}</div><div class="dots" id="dots">${'<span></span>'.repeat(4)}</div><div class="pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => k === '' ? '<span></span>' : `<button data-act="pin" data-k="${k}">${k}</button>`).join('')}</div><button data-act="close">Cancel</button></div>`); },
+  pin(el) {
+    const k = el.dataset.k; if (k === '⌫') pinBuf = pinBuf.slice(0, -1); else if (pinBuf.length < 4) pinBuf += k;
+    document.querySelectorAll('#dots span').forEach((s, i) => s.classList.toggle('on', i < pinBuf.length));
+    if (pinBuf.length < 4) return;
+    const m = M(pinFor), want = m.role === 'parent' ? S.fam.parentPin : m.pin;
+    if (pinHash(S.fid, pinBuf) === want) { S.me = m.id; localStorage.setItem('fc.me.' + S.fid, m.id); S.view = null; closeModal(); ac(); render(); window.scrollTo(0, 0); }
+    else { pinBuf = ''; const d = $('#dots'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); d.querySelectorAll('span').forEach(s => s.classList.remove('on')); }
+  },
+  close: closeModal,
+  switch() { S.me = null; localStorage.removeItem('fc.me.' + S.fid); render(); window.scrollTo(0, 0); },
+  tab(el) { S.view = el.dataset.v; render(); window.scrollTo(0, 0); },
+  toggle(el) {
+    const kid = el.dataset.kid, cid = el.dataset.c, key = S.today;
+    if (!(isParent() || kid === S.me)) return;
+    const was = isComplete(kid, key), d = {...doneMap(kid, key)}, on = !d[cid];
+    if (on) d[cid] = Date.now(); else delete d[cid];
+    const req = choresFor(kid, key), comp = req.length > 0 && req.every(c => d[c.id]);
+    const day = S.days[key] || (S.days[key] = {d: key, done: {}, complete: {}}); day.done = {...day.done, [kid]: d}; day.complete = {...day.complete, [kid]: comp};
+    W(sub('days') + '/' + key, {d: key, done: {[kid]: {[cid]: on ? Date.now() : DEL}}, complete: {[kid]: comp}});
+    if (on) sfx('pop');
+    render();
+    if (comp && !was) celebrate(kid);
+  },
+  claim(el) { const x = S.fam.extras.find(e => e.id === el.dataset.x);
+    const note = x.needsNote ? `<label class="f">${esc(x.notePrompt || 'What did you do?')}</label><textarea id="cNote" rows="3" placeholder="Describe what you did"></textarea>` : '';
+    openModal(`<h2>${x.emoji} ${esc(T(x))}</h2><p>Nice work! A parent will check it, then you get <b>+${x.pts} points</b>.</p>${note}<label class="f">📸 Add a photo (optional)</label><input type="file" id="ph" accept="image/*" capture="environment"><p class="mut" id="phMsg"></p><button class="big" data-act="sendClaim" data-x="${x.id}">Send to parents</button><div style="height:8px"></div><button data-act="close">Cancel</button>`); },
+  async sendClaim(el) {
+    const x = S.fam.extras.find(e => e.id === el.dataset.x), note = ($('#cNote')?.value || '').trim();
+    if (x.needsNote && !note) return toast('Tell your parents what you did');
+    const file = $('#ph')?.files?.[0]; let photo = null;
+    if (file) { el.disabled = true; $('#phMsg').textContent = 'Shrinking photo…'; photo = await compress(file); if (!photo) toast('Photo was too big, sent without it'); }
+    const id = rid(); const c = {kid: S.me, extra: x.id, title: T(x), emoji: x.emoji, pts: +x.pts, day: S.today, ts: Date.now(), status: 'pending'}; if (photo) c.photo = photo; if (note) c.note = note.slice(0, 240);
+    W(sub('claims') + '/' + id, c); closeModal(); sfx('pop'); toast('Sent! ⏳ Waiting for a parent');
+  },
+  okClaim(el) { W(sub('claims') + '/' + el.dataset.id, {status: 'approved', photo: DEL, decidedAt: Date.now()}); sfx('pop'); toast('Points awarded ⭐'); },
+  noClaim(el) { W(sub('claims') + '/' + el.dataset.id, {status: 'rejected', photo: DEL, decidedAt: Date.now()}); },
+  photo(el) { const c = S.claims.find(c => c.id === el.dataset.id); openModal(`<img src="${c.photo}" style="width:100%;border-radius:16px"><div style="height:10px"></div><button data-act="close">Close</button>`); },
+  redeem(el) { const r = S.fam.rewards.find(r => r.id === el.dataset.r); if (balance(S.me) < r.cost) return;
+    W(sub('redemptions') + '/' + rid(), {kid: S.me, reward: r.id, title: r.title, emoji: r.emoji, cost: +r.cost, ts: Date.now(), day: S.today, status: 'pending'}); sfx('pop'); toast('Asked a parent! 🎁'); },
+  okRed(el) { W(sub('redemptions') + '/' + el.dataset.id, {status: 'approved', decidedAt: Date.now()}); toast('Reward given 🎁'); },
+  noRed(el) { W(sub('redemptions') + '/' + el.dataset.id, {status: 'declined', decidedAt: Date.now()}); toast('Points returned'); },
+  suggest() { const t = val('sugT'); if (!t) return; W(sub('suggestions') + '/' + rid(), {kid: S.me, title: t.slice(0, 80), ts: Date.now(), status: 'pending'}); $('#sugT').value = ''; toast('Idea sent 💡'); },
+  okSug(el) { const s = S.sugg.find(s => s.id === el.dataset.id);
+    openModal(`<h2>💡 ${esc(s.title)}</h2><label class="f">How many points should it cost?</label><input id="sgCost" inputmode="numeric" value="40"><div style="height:10px"></div><button class="big" data-act="addSug" data-id="${s.id}">Add to rewards</button>`); },
+  addSug(el) { const s = S.sugg.find(s => s.id === el.dataset.id), cost = Math.max(1, parseInt(val('sgCost')) || 40);
+    W(famPath(), {rewards: [...S.fam.rewards, {id: rid(), title: s.title, emoji: '🌟', cost}]}); W(sub('suggestions') + '/' + s.id, {status: 'approved'}); closeModal(); },
+  noSug(el) { W(sub('suggestions') + '/' + el.dataset.id, {status: 'declined'}); },
+  mute() { localStorage.setItem('fc.mute', localStorage.getItem('fc.mute') === '1' ? '0' : '1'); render(); },
+  pause(el) { const k = el.dataset.id, arr = clone(S.fam.pauses?.[k] || []), open = arr.find(p => !p.to);
+    if (open) { open.to = addDays(S.today, -1); if (open.to < open.from) arr.splice(arr.indexOf(open), 1); } else arr.push({from: S.today, to: null});
+    W(famPath(), {pauses: {[k]: arr}}); toast(open ? 'Streak resumed' : '🏖️ Paused, streak is safe'); },
+  editKid(el) { const k = M(el.dataset.id);
+    openModal(`<h2>${k.emoji} Edit ${esc(k.name)}</h2><label class="f">Name</label><input id="kName" value="${esc(k.name)}"><label class="f">Nickname</label><input id="kNick" value="${esc(k.nick || '')}"><label class="f">Emoji</label><input id="kEmoji" value="${esc(k.emoji)}" maxlength="4"><label class="f">Colour</label><input id="kColor" type="color" value="${esc(k.color)}" style="height:48px"><label class="f">New PIN (blank = keep)</label><input id="kPin" inputmode="numeric" maxlength="4"><div style="height:12px"></div><button class="big" data-act="saveKid" data-id="${k.id}">Save</button>`); },
+  saveKid(el) { const p = val('kPin'); if (p && !okPin(p)) return toast('PIN must be 4 digits');
+    const ms = clone(S.fam.members).map(m => m.id !== el.dataset.id ? m : {...m, name: val('kName') || m.name, nick: val('kNick'), emoji: val('kEmoji') || m.emoji, color: val('kColor') || m.color, ...(p ? {pin: pinHash(S.fid, p)} : {})});
+    W(famPath(), {members: ms}); closeModal(); toast('Saved'); },
+  editChore(el) { const c = S.fam.chores.find(c => c.id === el.dataset.id) || {id: '', title: '', emoji: '⭐', slot: 'am', kids: kids().map(k => k.id), days: ALL, rotate: 'none'};
+    openModal(`<h2>${c.id ? 'Edit' : 'New'} must-do</h2><label class="f">Chore</label><input id="cT" value="${esc(c.title)}" placeholder="e.g. Make your bed"><div class="mut">Tip: {dog} becomes the dog's name.</div>
+    <label class="f">Emoji</label><input id="cE" value="${esc(c.emoji)}" maxlength="4">
+    <label class="f">When</label><select id="cS">${SLOTS.map(s => `<option value="${s.k}" ${s.k === c.slot ? 'selected' : ''}>${s.icon} ${s.label}</option>`).join('')}</select>
+    <label class="f">Who</label>${kids().map(k => `<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" class="cK" value="${k.id}" style="width:auto" ${c.kids.includes(k.id) ? 'checked' : ''}> ${esc(k.nick || k.name)}</label>`).join('')}
+    <select id="cR"><option value="none" ${c.rotate !== 'alternate' ? 'selected' : ''}>Everyone ticked does it</option><option value="alternate" ${c.rotate === 'alternate' ? 'selected' : ''}>Take turns (alternate days)</option></select>
+    <label class="f">Days</label><div class="days">${DOW.map((d, i) => `<button data-act="dayTog" data-d="${i}" class="${(c.days || ALL).includes(i) ? 'on' : ''}">${d}</button>`).join('')}</div>
+    <div style="height:14px"></div><button class="big" data-act="saveChore" data-id="${c.id}">Save</button>${c.id ? `<div style="height:8px"></div><button class="danger" data-act="delChore" data-id="${c.id}">Delete chore</button>` : ''}`); },
+  dayTog(el) { el.classList.toggle('on'); },
+  saveChore(el) { const t = val('cT'); if (!t) return toast('Give it a name');
+    const days = [...document.querySelectorAll('.days button.on')].map(b => +b.dataset.d), ks = [...document.querySelectorAll('.cK:checked')].map(b => b.value);
+    if (!ks.length || !days.length) return toast('Pick at least one kid and one day');
+    const c = {id: el.dataset.id || rid(), title: t.slice(0, 60), emoji: val('cE') || '⭐', slot: val('cS'), kids: ks, days, rotate: ks.length > 1 ? val('cR') : 'none'};
+    const arr = clone(S.fam.chores); const i = arr.findIndex(x => x.id === c.id); if (i >= 0) arr[i] = c; else arr.push(c);
+    W(famPath(), {chores: arr}); closeModal(); toast('Saved'); },
+  delChore(el) { if (!confirm('Delete this chore?')) return; W(famPath(), {chores: S.fam.chores.filter(c => c.id !== el.dataset.id)}); closeModal(); },
+  editItem(el) { const kind = el.dataset.kind, x = S.fam[kind].find(i => i.id === el.dataset.id) || {id: '', title: '', emoji: kind === 'extras' ? '⭐' : '🎁', [kind === 'extras' ? 'pts' : 'cost']: kind === 'extras' ? 5 : 30}, nk = kind === 'extras' ? 'pts' : 'cost';
+    openModal(`<h2>${x.id ? 'Edit' : 'New'} ${kind === 'extras' ? 'extra' : 'reward'}</h2><label class="f">Name</label><input id="iT" value="${esc(x.title)}"><label class="f">Emoji</label><input id="iE" value="${esc(x.emoji)}" maxlength="4"><label class="f">${kind === 'extras' ? 'Points earned' : 'Points cost'}</label><input id="iN" inputmode="numeric" value="${x[nk]}">${kind === 'extras' ? `<label class="f" style="display:flex;align-items:center;gap:8px;font-weight:600"><input type="checkbox" id="iNote" ${x.needsNote ? 'checked' : ''} style="width:auto"> Ask the kid to describe what they did</label>` : ''}<div style="height:14px"></div><button class="big" data-act="saveItem" data-kind="${kind}" data-id="${x.id}">Save</button>${x.id ? `<div style="height:8px"></div><button class="danger" data-act="delItem" data-kind="${kind}" data-id="${x.id}">Delete</button>` : ''}`); },
+  saveItem(el) { const kind = el.dataset.kind, nk = kind === 'extras' ? 'pts' : 'cost', t = val('iT'); if (!t) return toast('Give it a name');
+    const it = {id: el.dataset.id || rid(), title: t.slice(0, 60), emoji: val('iE') || '⭐', [nk]: Math.max(1, Math.min(1000, parseInt(val('iN')) || 5))};
+    if (kind === 'extras' && $('#iNote')?.checked) { it.needsNote = true; it.notePrompt = (S.fam.extras.find(x => x.id === it.id) || {}).notePrompt || 'What did you do? Describe it for your parents.'; }
+    const arr = clone(S.fam[kind]); const i = arr.findIndex(x => x.id === it.id); if (i >= 0) arr[i] = it; else arr.push(it); W(famPath(), {[kind]: arr}); closeModal(); },
+  delItem(el) { if (!confirm('Delete?')) return; const k = el.dataset.kind; W(famPath(), {[k]: S.fam[k].filter(x => x.id !== el.dataset.id)}); closeModal(); },
+  saveFam() { const p = val('mPin'); if (p && !okPin(p)) return toast('PIN must be 4 digits');
+    W(famPath(), {name: val('mName') || S.fam.name, dogName: val('mDog'), goal: {...S.fam.goal, title: val('mGoal') || 'Family outing', target: Math.max(10, parseInt(val('mTarget')) || 300)}, ...(p ? {parentPin: pinHash(S.fid, p)} : {})}); toast('Saved'); },
+  resetGoal() { if (confirm('Start the team goal from zero today?')) W(famPath(), {goal: {...S.fam.goal, since: S.today}}); },
+  async share() { const l = joinLink(); if (navigator.share) { try { await navigator.share({title: 'Family Chores', text: 'Join our family chore board', url: l}); } catch {} } else ACT.copy(); },
+  async copy() { try { await navigator.clipboard.writeText(joinLink()); toast('Link copied'); } catch { toast('Copy failed, press and hold the link'); } },
+  async qr() { openModal(`<h2>📷 Scan to join</h2><div class="qr" id="qrBox"><p class="mut">Loading…</p></div><button data-act="close">Close</button>`);
+    try { if (!window.qrcode) await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      const q = qrcode(0, 'M'); q.addData(joinLink()); q.make(); $('#qrBox').innerHTML = q.createSvgTag({cellSize: 4, margin: 2, scalable: true}); }
+    catch { $('#qrBox').innerHTML = '<p class="mut">QR needs internet. Use Share link instead.</p>'; } },
+  leave() { if (!confirm('Remove this family from this phone? (Nothing is deleted for the others.)')) return; localStorage.removeItem('fc.fid'); localStorage.removeItem('fc.me.' + S.fid); S.fid = null; subscribe(); render(); }
+};
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (!el || el.disabled) return; const f = ACT[el.dataset.act]; if (f) { e.preventDefault(); f(el, e); } });
+
+/* ---------- boot ---------- */
+(async function boot() {
+  render();
+  const jf = qs.get('family');
+  if (jf && /^[A-Za-z0-9]{20,64}$/.test(jf)) { S.fid = jf; localStorage.setItem('fc.fid', jf); qs.delete('family'); history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs : '')); }
+  try { await store.init(); } catch (e) { S.ready = true; $('#app').innerHTML = `<main style="text-align:center;margin-top:30vh"><p>Couldn't connect to sync.<br><span class="mut">${esc(e.message || e)}</span></p><button onclick="location.reload()">Try again</button></main>`; return; }
+  S.ready = true; subscribe(); render();
+  setInterval(tick, 30000); document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body></html>
